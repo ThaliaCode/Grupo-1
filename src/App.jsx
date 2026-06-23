@@ -1,11 +1,11 @@
 
 
 function App() {
- 
+
 
   return (
     <>
-      <p>Thalia dis</p>
+      <p>Thalia Moroni Samuel Luis</p>
     </>
   )
 }
