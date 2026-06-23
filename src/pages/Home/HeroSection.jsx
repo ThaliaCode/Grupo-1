@@ -13,7 +13,7 @@ function HeroSection({ onNavigate }) {
     };
 
     return (
-        <section className="relative h-[500px] md:h-[600px] flex items-center justify-center overflow-hidden">
+        <section className="relative h-125 md:h-150 flex items-center justify-center overflow-hidden">
             {/* Imagen de fondo con overlay */}
             <div className="absolute inset-0">
                 <img
@@ -21,7 +21,7 @@ function HeroSection({ onNavigate }) {
                     alt="Culinary background"
                     className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+                <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/40 to-black/70" />
             </div>
 
             {/* Contenido */}

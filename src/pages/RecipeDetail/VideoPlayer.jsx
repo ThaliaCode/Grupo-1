@@ -15,7 +15,7 @@ function VideoPlayer({ embedUrl, thumbnail }) {
                         alt="Video thumbnail"
                         className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
 
                     {/* Botón Play */}
                     <button

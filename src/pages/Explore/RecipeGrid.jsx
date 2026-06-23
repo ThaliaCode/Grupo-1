@@ -19,7 +19,7 @@ function RecipeGrid({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array(6).fill().map((_, i) => (
                     <div key={i} className="bg-surface dark:bg-surface-dark rounded-2xl overflow-hidden border border-border dark:border-border-dark animate-pulse">
-                        <div className="aspect-[4/3] bg-gray-200 dark:bg-gray-700" />
+                        <div className="aspect-4/3 bg-gray-200 dark:bg-gray-700" />
                         <div className="p-4 space-y-3">
                             <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
                             <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
@@ -79,8 +79,8 @@ function RecipeGrid({
                                 key={page}
                                 onClick={() => onPageChange(page)}
                                 className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${isActive
-                                        ? 'bg-brand-primary text-white'
-                                        : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-white/5'
+                                    ? 'bg-brand-primary text-white'
+                                    : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-white/5'
                                     }`}
                             >
                                 {page}

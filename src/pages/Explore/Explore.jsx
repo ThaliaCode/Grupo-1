@@ -151,7 +151,7 @@ function Explore({ favorites, toggleFavorite, onRecipeClick }) {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-500">
             <div className="flex flex-col lg:flex-row gap-8">
-                <aside className="lg:w-64 flex-shrink-0">
+                <aside className="lg:w-64 shrink-0">
                     <FilterSidebar
                         categories={categories}
                         areas={areas}
@@ -168,7 +168,7 @@ function Explore({ favorites, toggleFavorite, onRecipeClick }) {
                                     {index > 0 && (
                                         <span className="font-icons text-gray-400 text-xs">chevron_right</span>
                                     )}
-                                    <span className={crumb.active ? 'text-[#e63946] font-medium' : 'text-gray-500'}>
+                                    <span className={crumb.active ? 'text-brand-primary font-medium' : 'text-gray-500'}>
                                         {crumb.label}
                                     </span>
                                 </li>

@@ -78,13 +78,13 @@ function FilterSidebar({ categories, areas, activeFilters, onFilterChange }) {
                             key={cat.id}
                             onClick={() => handleCategoryClick(cat.id === 'all' ? 'All' : cat.label)}
                             className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-colors ${activeCategory === (cat.id === 'all' ? 'All' : cat.label)
-                                    ? 'bg-[#e63946]/10 text-[#e63946] font-medium'
-                                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#121212] dark:hover:text-white'
+                                ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#121212] dark:hover:text-white'
                                 }`}
                         >
                             <span className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${activeCategory === (cat.id === 'all' ? 'All' : cat.label)
-                                    ? 'bg-[#e63946] border-[#e63946]'
-                                    : 'border-gray-300 dark:border-gray-600'
+                                ? 'bg-brand-primary border-brand-primary'
+                                : 'border-gray-300 dark:border-gray-600'
                                 }`}>
                                 {activeCategory === (cat.id === 'all' ? 'All' : cat.label) && (
                                     <span className="font-icons text-white text-xs">check</span>
@@ -107,13 +107,13 @@ function FilterSidebar({ categories, areas, activeFilters, onFilterChange }) {
                             key={area}
                             onClick={() => handleAreaClick(area)}
                             className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-colors ${activeArea === area
-                                    ? 'bg-[#e63946]/10 text-[#e63946] font-medium'
-                                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#121212] dark:hover:text-white'
+                                ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#121212] dark:hover:text-white'
                                 }`}
                         >
                             <span className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${activeArea === area
-                                    ? 'bg-[#e63946] border-[#e63946]'
-                                    : 'border-gray-300 dark:border-gray-600'
+                                ? 'bg-brand-primary border-brand-primary'
+                                : 'border-gray-300 dark:border-gray-600'
                                 }`}>
                                 {activeArea === area && (
                                     <span className="font-icons text-white text-xs">check</span>
@@ -139,13 +139,13 @@ function FilterSidebar({ categories, areas, activeFilters, onFilterChange }) {
                         placeholder="e.g. Chicken, Tofu"
                         value={ingredientInput}
                         onChange={(e) => setIngredientInput(e.target.value)}
-                        className="w-full pl-9 pr-8 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-[#121212] dark:text-white placeholder-gray-400 outline-none focus:border-[#e63946] focus:ring-1 focus:ring-[#e63946]/20 transition-all"
+                        className="w-full pl-9 pr-8 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-[#121212] dark:text-white placeholder-gray-400 outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-all"
                     />
                     {ingredientInput && (
                         <button
                             type="button"
                             onClick={clearIngredient}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 font-icons text-gray-400 hover:text-[#e63946] text-sm"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 font-icons text-gray-400 hover:text-brand-primary text-sm"
                         >
                             close
                         </button>
@@ -154,7 +154,7 @@ function FilterSidebar({ categories, areas, activeFilters, onFilterChange }) {
 
                 {activeFilters.ingredient && (
                     <div className="mt-3 flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#e63946]/10 text-[#e63946] text-xs font-medium rounded-full">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-brand-primary/10 text-brand-primary text-xs font-medium rounded-full">
                             {activeFilters.ingredient}
                             <button onClick={clearIngredient} className="font-icons text-xs hover:text-red-600">
                                 close

@@ -96,13 +96,13 @@ function RecipeDetail({ recipeId, favorites, toggleFavorite, onNavigate }) {
     return (
         <div className="animate-in fade-in duration-500">
             {/* ─── Hero Image ─── */}
-            <div className="relative h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
+            <div className="relative h-75 md:h-100 lg:h-125 overflow-hidden">
                 <img
                     src={recipe.strMealThumb}
                     alt={recipe.strMeal}
                     className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
 
                 {/* Botón volver */}
                 <button
@@ -145,8 +145,8 @@ function RecipeDetail({ recipeId, favorites, toggleFavorite, onNavigate }) {
                             <button
                                 onClick={handleToggleFavorite}
                                 className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all ${isFavorite
-                                        ? 'bg-brand-primary text-white'
-                                        : 'bg-gray-100 dark:bg-white/5 text-brand-neutral dark:text-white hover:bg-brand-primary hover:text-white'
+                                    ? 'bg-brand-primary text-white'
+                                    : 'bg-gray-100 dark:bg-white/5 text-brand-neutral dark:text-white hover:bg-brand-primary hover:text-white'
                                     }`}
                             >
                                 <span className={`font-icons ${isFavorite ? 'font-icons-filled' : ''}`}>
@@ -216,7 +216,7 @@ function RecipeDetail({ recipeId, favorites, toggleFavorite, onNavigate }) {
                             <ol className="space-y-4">
                                 {instructions.map((step, index) => (
                                     <li key={index} className="flex gap-4">
-                                        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-primary/10 text-brand-primary text-sm font-bold flex items-center justify-center">
+                                        <span className="shrink-0 w-8 h-8 rounded-full bg-brand-primary/10 text-brand-primary text-sm font-bold flex items-center justify-center">
                                             {index + 1}
                                         </span>
                                         <p className="text-sm text-text-secondary dark:text-gray-300 leading-relaxed pt-1">
