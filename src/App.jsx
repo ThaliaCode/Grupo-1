@@ -1,3 +1,4 @@
+import Luis from "./components/Luis"
 
 
 function App() {
@@ -6,6 +7,7 @@ function App() {
   return (
     <>
       <p>Thalia Moroni Samuel Luis</p>
+      <Luis></Luis>
     </>
   )
 }
