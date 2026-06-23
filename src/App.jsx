@@ -1,3 +1,4 @@
+import { Thalia } from "./components/Thalia"
 
 
 function App() {
@@ -6,6 +7,7 @@ function App() {
   return (
     <>
       <p>Thalia Moroni Samuel Luis</p>
+       <Thalia/>
     </>
   )
 }
