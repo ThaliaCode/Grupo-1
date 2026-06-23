@@ -1,1 +1,44 @@
-@import 'tailwindcss';
+/* 1. IMPORTACIÓN DE FUENTES (Siempre arriba de todo) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+/* 2. IMPORTACIÓN NATIVA DE TAILWIND v4 */
+@import "tailwindcss";
+
+/* 3. CONFIGURACIÓN DEL SISTEMA DE DISEÑO (Basado en la imagen de Relume) */
+@theme {
+    /* Paleta de Colores de la Guía de Estilos */
+    --color-brand-primary: #e63946;
+    /* Rojo Coral (Botón principal, acentos) */
+    --color-brand-secondary: #2a9d8f;
+    /* Verde Azulado (Badges como Vegan/Healthy) */
+    --color-brand-tertiary: #d9480f;
+    /* Naranja Quemado (Acentos alternativos) */
+    --color-brand-neutral: #121212;
+    /* Negro Fondo / Modo Oscuro */
+
+    /* Colores Auxiliares de Fondo y Tarjetas */
+    --color-bg-light: #f8fafc;
+    --color-bg-dark: #0f172a;
+    --color-card-dark: #1e293b;
+
+    /* Tipografía Oficial */
+    --font-sans: 'Inter', sans-serif;
+
+    /* Utilidad de Iconos de Google */
+    --font-icons: 'Material Symbols Outlined';
+}
+
+/* 4. AJUSTES GLOBALES AUXILIARES */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Reset rápido para asegurar que los inputs de tipo número no muestren las flechas */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
