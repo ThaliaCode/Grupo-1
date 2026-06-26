@@ -1,16 +1,38 @@
-# React + Vite
+# Grupo 1 - Proyecto React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es un proyecto grupal desarrollado con React, Vite y Tailwind CSS.
 
-Currently, two official plugins are available:
+## Funcionalidad del proyecto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+El proyecto tiene como objetivo construir una interfaz web responsive, trabajando de manera colaborativa con GitHub y Vercel.
 
-## React Compiler
+Actualmente incluye:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Interfaz inicial del proyecto.
+- Diseño responsive con Tailwind CSS.
+- Sección de integrantes del equipo.
+- Revisión de cambios mediante Pull Requests.
+- Vista previa automática con Vercel antes de hacer merge a `main`.
 
-## Expanding the ESLint configuration
+## Tecnologías utilizadas
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React
+- Vite
+- Tailwind CSS
+- Git
+- GitHub
+- Vercel
+
+## Integrantes
+
+- Thalia
+- Moroni
+- Samuel
+- Luis
+
+## Flujo de trabajo
+
+Cada integrante trabaja en su propia rama.  
+Los cambios se suben mediante commits y se revisan en un Pull Request antes de unirlos a `main`.
+
+## Comandos principales
