@@ -1,8 +1,45 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import FilterSidebar from './FilterSidebar';
 import RecipeGrid from './RecipeGrid';
+import { fetchMealsByFirstLetter, getAllMeals, getMealCatalog, searchMealsByName } from '../../utils/mealApi';
 
-const API_BASE = 'https://www.themealdb.com/api/json/v1/1';
+const DEFAULT_FILTERS = {
+    category: 'All',
+    area: '',
+    ingredient: '',
+    search: '',
+};
+
+const mealHasIngredient = (meal, ingredient) => {
+    const normalizedIngredient = ingredient.toLowerCase();
+
+    for (let i = 1; i <= 20; i++) {
+        const mealIngredient = meal[`strIngredient${i}`];
+        if (mealIngredient?.toLowerCase().includes(normalizedIngredient)) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+const filterMeals = (meals, filters) => {
+    let filteredMeals = meals;
+
+    if (filters.category && filters.category !== 'All') {
+        filteredMeals = filteredMeals.filter((meal) => meal.strCategory === filters.category);
+    }
+
+    if (filters.area) {
+        filteredMeals = filteredMeals.filter((meal) => meal.strArea === filters.area);
+    }
+
+    if (filters.ingredient) {
+        filteredMeals = filteredMeals.filter((meal) => mealHasIngredient(meal, filters.ingredient));
+    }
+
+    return filteredMeals;
+};
 
 function Explore({ favorites, toggleFavorite, onRecipeClick }) {
     const [filteredRecipes, setFilteredRecipes] = useState([]);
@@ -11,58 +48,59 @@ function Explore({ favorites, toggleFavorite, onRecipeClick }) {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalResults, setTotalResults] = useState(0);
+    const [activeFilters, setActiveFilters] = useState(DEFAULT_FILTERS);
+    const initialLoadDone = useRef(false);
 
-    const [activeFilters, setActiveFilters] = useState({
-        category: 'All',
-        area: '',
-        ingredient: '',
-        search: '',
-    });
+    const updateRecipes = (meals) => {
+        setFilteredRecipes(meals);
+        setTotalResults(meals.length);
+        setCurrentPage(1);
+    };
 
-    // ─── Búsqueda por texto ───
-    const performSearch = useCallback(async (query) => {
-        try {
-            setLoading(true);
-            const res = await fetch(`${API_BASE}/search.php?s=${encodeURIComponent(query)}`);
-            const data = await res.json();
-            const meals = data.meals || [];
-            setFilteredRecipes(meals);
-            setTotalResults(meals.length);
-            setCurrentPage(1);
-        } catch (error) {
-            console.error('Search error:', error);
-        } finally {
-            setLoading(false);
-        }
+    const loadRecipesForFilters = useCallback(async (filters) => {
+        const meals = filters.search
+            ? await searchMealsByName(filters.search)
+            : await getAllMeals();
+
+        return filterMeals(meals, filters);
     }, []);
 
-    // ─── Cargar datos iniciales ───
     useEffect(() => {
+        if (initialLoadDone.current) {
+            return;
+        }
+
+        initialLoadDone.current = true;
+
         const fetchInitialData = async () => {
             try {
                 setLoading(true);
 
-                const catRes = await fetch(`${API_BASE}/categories.php`);
-                const catData = await catRes.json();
-                setCategories(catData.categories || []);
+                const catalog = await getMealCatalog();
+                setCategories(catalog.categories);
+                setAreas(catalog.areas);
 
-                const areaRes = await fetch(`${API_BASE}/list.php?a=list`);
-                const areaData = await areaRes.json();
-                setAreas(areaData.meals?.map(a => a.strArea) || []);
+                const homeFilter = sessionStorage.getItem('home-filter');
+                if (homeFilter) {
+                    const parsedFilter = JSON.parse(homeFilter);
+                    const nextFilters = { ...DEFAULT_FILTERS, ...parsedFilter };
+                    setActiveFilters(nextFilters);
+                    sessionStorage.removeItem('home-filter');
+                    updateRecipes(await loadRecipesForFilters(nextFilters));
+                    return;
+                }
 
                 const homeSearch = sessionStorage.getItem('home-search');
                 if (homeSearch) {
-                    setActiveFilters(prev => ({ ...prev, search: homeSearch }));
+                    const nextFilters = { ...DEFAULT_FILTERS, search: homeSearch };
+                    setActiveFilters(nextFilters);
                     sessionStorage.removeItem('home-search');
-                    await performSearch(homeSearch);
-                } else {
-                    const allRes = await fetch(`${API_BASE}/search.php?s=`);
-                    const allData = await allRes.json();
-                    const meals = allData.meals || [];
-                    setFilteredRecipes(meals);
-                    setTotalResults(meals.length);
+                    updateRecipes(await loadRecipesForFilters(nextFilters));
+                    return;
                 }
 
+                const meals = await fetchMealsByFirstLetter('a');
+                updateRecipes(meals);
             } catch (error) {
                 console.error('Error loading explore data:', error);
             } finally {
@@ -71,75 +109,29 @@ function Explore({ favorites, toggleFavorite, onRecipeClick }) {
         };
 
         fetchInitialData();
-    }, [performSearch]);
+    }, [loadRecipesForFilters]);
 
-    // ─── Aplicar filtros combinados ───
     const applyFilters = useCallback(async (filters) => {
         setActiveFilters(filters);
         setLoading(true);
-        setCurrentPage(1);
 
         try {
-            let meals = [];
-
-            if (filters.category && filters.category !== 'All') {
-                const res = await fetch(`${API_BASE}/filter.php?c=${encodeURIComponent(filters.category)}`);
-                const data = await res.json();
-                meals = data.meals || [];
-            } else if (filters.area) {
-                const res = await fetch(`${API_BASE}/filter.php?a=${encodeURIComponent(filters.area)}`);
-                const data = await res.json();
-                meals = data.meals || [];
-            } else if (filters.search) {
-                await performSearch(filters.search);
-                return;
-            } else {
-                const res = await fetch(`${API_BASE}/search.php?s=`);
-                const data = await res.json();
-                meals = data.meals || [];
-            }
-
-            if (filters.ingredient && meals.length > 0) {
-                const detailPromises = meals.slice(0, 25).map(m =>
-                    fetch(`${API_BASE}/lookup.php?i=${m.idMeal}`).then(r => r.json())
-                );
-                const details = await Promise.all(detailPromises);
-                const fullMeals = details.map(d => d.meals?.[0]).filter(Boolean);
-
-                meals = fullMeals.filter(meal => {
-                    for (let i = 1; i <= 20; i++) {
-                        const ing = meal[`strIngredient${i}`];
-                        if (ing && ing.toLowerCase().includes(filters.ingredient.toLowerCase())) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-            } else if (meals.length > 0 && !meals[0].strCategory) {
-                const detailPromises = meals.slice(0, 25).map(m =>
-                    fetch(`${API_BASE}/lookup.php?i=${m.idMeal}`).then(r => r.json())
-                );
-                const details = await Promise.all(detailPromises);
-                meals = details.map(d => d.meals?.[0]).filter(Boolean);
-            }
-
-            setFilteredRecipes(meals);
-            setTotalResults(meals.length);
-
+            updateRecipes(await loadRecipesForFilters(filters));
         } catch (error) {
             console.error('Filter error:', error);
         } finally {
             setLoading(false);
         }
-    }, [performSearch]);
+    }, [loadRecipesForFilters]);
 
-    // Breadcrumbs
     const getBreadcrumbs = () => {
         const crumbs = [{ label: 'Explore', active: false }];
         if (activeFilters.category !== 'All') {
             crumbs.push({ label: activeFilters.category, active: true });
         } else if (activeFilters.area) {
             crumbs.push({ label: activeFilters.area, active: true });
+        } else if (activeFilters.ingredient) {
+            crumbs.push({ label: activeFilters.ingredient, active: true });
         } else if (activeFilters.search) {
             crumbs.push({ label: `"${activeFilters.search}"`, active: true });
         } else {
@@ -181,7 +173,7 @@ function Explore({ favorites, toggleFavorite, onRecipeClick }) {
                             Curated Recipes
                         </h1>
                         <span className="text-sm text-gray-500">
-                            Showing {Math.min((currentPage - 1) * 12 + 1, totalResults)} - {Math.min(currentPage * 12, totalResults)} of {totalResults} results
+                            Showing {totalResults === 0 ? 0 : Math.min((currentPage - 1) * 12 + 1, totalResults)} - {Math.min(currentPage * 12, totalResults)} of {totalResults} results
                         </span>
                     </div>
 

@@ -1,34 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function FilterSidebar({ categories, areas, activeFilters, onFilterChange }) {
+    // 1. Estados para los inputs de búsqueda visual en el Sidebar
+    const [categorySearch, setCategorySearch] = useState('');
+    const [areaSearch, setAreaSearch] = useState('');
     const [ingredientInput, setIngredientInput] = useState(activeFilters.ingredient);
-    const [activeCategory, setActiveCategory] = useState(activeFilters.category);
-    const [activeArea, setActiveArea] = useState(activeFilters.area);
+
+    // Sincronizar el ingrediente si cambia de forma externa
+    useEffect(() => {
+        setIngredientInput(activeFilters.ingredient);
+    }, [activeFilters.ingredient]);
 
     const categoryOptions = [
         { id: 'all', label: 'All Recipes' },
         ...categories.map(c => ({ id: c.strCategory, label: c.strCategory }))
     ];
 
+    // 2. Filtrar opciones de categorías en base al input de texto interno
+    const filteredCategoryOptions = categoryOptions.filter(cat => 
+        cat.label.toLowerCase().includes(categorySearch.toLowerCase())
+    );
+
+    // 3. Filtrar opciones de gastronomía (Cuisine) en base al input de texto interno
+    const filteredAreas = areas.filter(area => 
+        area.toLowerCase().includes(areaSearch.toLowerCase())
+    );
+
     const handleCategoryClick = (category) => {
-        setActiveCategory(category);
-        setActiveArea('');
         onFilterChange({
             ...activeFilters,
             category: category,
             area: '',
+            ingredient: '',
             search: '',
         });
     };
 
     const handleAreaClick = (area) => {
-        const newArea = activeArea === area ? '' : area;
-        setActiveArea(newArea);
-        setActiveCategory('All');
+        const newArea = activeFilters.area === area ? '' : area;
         onFilterChange({
             ...activeFilters,
             area: newArea,
             category: 'All',
+            ingredient: '',
             search: '',
         });
     };
@@ -54,8 +68,6 @@ function FilterSidebar({ categories, areas, activeFilters, onFilterChange }) {
         });
     };
 
-    // ELIMINADA: const hasActiveIngredient = ... (no se usaba)
-
     return (
         <div className="space-y-8">
             <div>
@@ -67,65 +79,103 @@ function FilterSidebar({ categories, areas, activeFilters, onFilterChange }) {
                 </p>
             </div>
 
-            {/* Categories */}
+            {/* Categories Section */}
             <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                     Categories
                 </h3>
-                <div className="space-y-1">
-                    {categoryOptions.slice(0, 6).map((cat) => (
-                        <button
-                            key={cat.id}
-                            onClick={() => handleCategoryClick(cat.id === 'all' ? 'All' : cat.label)}
-                            className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-colors ${activeCategory === (cat.id === 'all' ? 'All' : cat.label)
-                                ? 'bg-brand-primary/10 text-brand-primary font-medium'
-                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#121212] dark:hover:text-white'
+                {/* Input buscador de categorías */}
+                <div className="relative mb-3">
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 font-icons text-gray-400 text-xs">
+                        search
+                    </span>
+                    <input
+                        type="text"
+                        placeholder="Search category..."
+                        value={categorySearch}
+                        onChange={(e) => setCategorySearch(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-md text-xs text-[#121212] dark:text-white placeholder-gray-400 outline-none focus:border-brand-primary transition-all"
+                    />
+                </div>
+                <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
+                    {filteredCategoryOptions.map((cat) => {
+                        const isSelected = activeFilters.category === (cat.id === 'all' ? 'All' : cat.label);
+                        return (
+                            <button
+                                key={cat.id}
+                                type="button"
+                                onClick={() => handleCategoryClick(cat.id === 'all' ? 'All' : cat.label)}
+                                className={`flex items-center gap-3 w-full px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                                    isSelected
+                                        ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#121212] dark:hover:text-white'
                                 }`}
-                        >
-                            <span className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${activeCategory === (cat.id === 'all' ? 'All' : cat.label)
-                                ? 'bg-brand-primary border-brand-primary'
-                                : 'border-gray-300 dark:border-gray-600'
+                            >
+                                <span className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                                    isSelected
+                                        ? 'bg-brand-primary border-brand-primary'
+                                        : 'border-gray-300 dark:border-gray-600'
                                 }`}>
-                                {activeCategory === (cat.id === 'all' ? 'All' : cat.label) && (
-                                    <span className="font-icons text-white text-xs">check</span>
-                                )}
-                            </span>
-                            {cat.label}
-                        </button>
-                    ))}
+                                    {isSelected && (
+                                        <span className="font-icons text-white text-xs">check</span>
+                                    )}
+                                </span>
+                                {cat.label}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
-            {/* Cuisine */}
+            {/* Cuisine / Areas Section */}
             <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                     Cuisine
                 </h3>
-                <div className="space-y-1">
-                    {areas.slice(0, 8).map((area) => (
-                        <button
-                            key={area}
-                            onClick={() => handleAreaClick(area)}
-                            className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-colors ${activeArea === area
-                                ? 'bg-brand-primary/10 text-brand-primary font-medium'
-                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#121212] dark:hover:text-white'
+                {/* Input buscador de regiones/cuisine */}
+                <div className="relative mb-3">
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 font-icons text-gray-400 text-xs">
+                        search
+                    </span>
+                    <input
+                        type="text"
+                        placeholder="Search cuisine..."
+                        value={areaSearch}
+                        onChange={(e) => setAreaSearch(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-md text-xs text-[#121212] dark:text-white placeholder-gray-400 outline-none focus:border-brand-primary transition-all"
+                    />
+                </div>
+                <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
+                    {filteredAreas.map((area) => {
+                        const isSelected = activeFilters.area === area;
+                        return (
+                            <button
+                                key={area}
+                                type="button"
+                                onClick={() => handleAreaClick(area)}
+                                className={`flex items-center gap-3 w-full px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                                    isSelected
+                                        ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#121212] dark:hover:text-white'
                                 }`}
-                        >
-                            <span className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${activeArea === area
-                                ? 'bg-brand-primary border-brand-primary'
-                                : 'border-gray-300 dark:border-gray-600'
+                            >
+                                <span className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                                    isSelected
+                                        ? 'bg-brand-primary border-brand-primary'
+                                        : 'border-gray-300 dark:border-gray-600'
                                 }`}>
-                                {activeArea === area && (
-                                    <span className="font-icons text-white text-xs">check</span>
-                                )}
-                            </span>
-                            {area}
-                        </button>
-                    ))}
+                                    {isSelected && (
+                                        <span className="font-icons text-white text-xs">check</span>
+                                    )}
+                                </span>
+                                {area}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
-            {/* Main Ingredient */}
+            {/* Main Ingredient Section */}
             <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
                     Main Ingredient
@@ -156,7 +206,7 @@ function FilterSidebar({ categories, areas, activeFilters, onFilterChange }) {
                     <div className="mt-3 flex items-center gap-2">
                         <span className="inline-flex items-center gap-1 px-3 py-1 bg-brand-primary/10 text-brand-primary text-xs font-medium rounded-full">
                             {activeFilters.ingredient}
-                            <button onClick={clearIngredient} className="font-icons text-xs hover:text-red-600">
+                            <button type="button" onClick={clearIngredient} className="font-icons text-xs hover:text-red-600">
                                 close
                             </button>
                         </span>

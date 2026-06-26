@@ -1,26 +1,28 @@
 const API_BASE = 'https://www.themealdb.com/api/json/v1/1';
-const LETTERS = 'abcdefghijklmnopqrstuvwxyz'. split ('');
+const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
 let allMealsCache = null;
 
-export const fetchRandomMeal = async()=>{
-    const resultados = await fetch('${API_BASE}/random.php');
-    const data = await resultados.json ();
-
+// CORREGIDO: Se cambiaron las comillas de las URLs a Backticks (``)
+export const fetchRandomMeal = async () => {
+    const resultados = await fetch(`${API_BASE}/random.php`);
+    const data = await resultados.json();
     return data.meals?.[0] || null;
-}
-export const fetchMealsByFirstLetter = async(letter)=>{
-    const resultados = await fetch('${API_BASE}/search.php?f=${encodeURIComponent(letter)}');
-    const data = await resultados.json ();
+};
 
+export const fetchMealsByFirstLetter = async (letter) => {
+    const resultados = await fetch(`${API_BASE}/search.php?f=${encodeURIComponent(letter)}`);
+    const data = await resultados.json();
     return data.meals || [];
-}
-export const searchMealsByName = async(query)=>{
-    const resultados = await fetch('${API_BASE}/search.php?s=${encodeURIComponent(query)}');
-    const data = await resultados.json ();
+};
 
+export const searchMealsByName = async (query) => {
+    const resultados = await fetch(`${API_BASE}/search.php?s=${encodeURIComponent(query)}`);
+    const data = await resultados.json();
     return data.meals || [];
-}
+};
+
+// ... El resto de tus funciones (getAllMeals y getMealCatalog) quedan igual
 
 
 export const getAllMeals = async () => {
