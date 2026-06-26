@@ -1,44 +1,68 @@
-/* 1. IMPORTACIÓN DE FUENTES (Siempre arriba de todo) */
+/* 1. Fuentes externas (PRIMERO) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
-/* 2. IMPORTACIÓN NATIVA DE TAILWIND v4 */
+/* 2. Tailwind (SEGUNDO) */
 @import "tailwindcss";
 
-/* 3. CONFIGURACIÓN DEL SISTEMA DE DISEÑO (Basado en la imagen de Relume) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 3. Tema (TERCERO) */
 @theme {
-    /* Paleta de Colores de la Guía de Estilos */
+    /* Colores de marca */
     --color-brand-primary: #e63946;
-    /* Rojo Coral (Botón principal, acentos) */
     --color-brand-secondary: #2a9d8f;
-    /* Verde Azulado (Badges como Vegan/Healthy) */
     --color-brand-tertiary: #d9480f;
-    /* Naranja Quemado (Acentos alternativos) */
     --color-brand-neutral: #121212;
-    /* Negro Fondo / Modo Oscuro */
 
-    /* Colores Auxiliares de Fondo y Tarjetas */
-    --color-bg-light: #f8fafc;
+    /* Colores de superficie */
+    --color-surface: #ffffff;
+    --color-surface-dark: #1e293b;
+    --color-bg: #f8f5f2;
     --color-bg-dark: #0f172a;
-    --color-card-dark: #1e293b;
 
-    /* Tipografía Oficial */
+    /* Texto */
+    --color-text: #121212;
+    --color-text-secondary: #6b7280;
+    --color-text-muted: #9ca3af;
+
+    /* Bordes */
+    --color-border: #e5e7eb;
+    --color-border-dark: #334155;
+
+    /* Tipografia */
     --font-sans: 'Inter', sans-serif;
-
-    /* Utilidad de Iconos de Google */
     --font-icons: 'Material Symbols Outlined';
 }
 
-/* 4. AJUSTES GLOBALES AUXILIARES */
+/* 4. Estilos base */
 @layer base {
     html {
+        font-family: var(--font-sans);
         scroll-behavior: smooth;
     }
 
-    /* Reset rápido para asegurar que los inputs de tipo número no muestren las flechas */
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+    body {
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Modo oscuro */
+    .dark body {
+        background-color: var(--color-bg-dark);
+        color: white;
+    }
+}
+
+/* 5. Componentes utilitarios */
+@layer components {
+    .font-icons {
+        font-family: var(--font-icons);
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .font-icons-filled {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
 }
