@@ -126,7 +126,7 @@ function Home({ favorites, toggleFavorite, onRecipeClick, onNavigate }) {
                 onSelect={handleCategorySelect}
             />
 
-           {/* THALIA - Carrusel visual principal para la Receta del día */}
+           {/* THALIA - Main visual carousel for Recipe of the Day */}
   <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div className="flex items-center justify-between mb-6">
         <div>
