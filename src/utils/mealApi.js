@@ -57,3 +57,32 @@ export const getMealCatalog = async () => {
 
     return { categories, areas };
 };
+
+//  -Obtiene todos los detalles de la receta por ID.
+export const getMealById = async (id) => {
+    const resultados = await fetch(`${API_BASE}/lookup.php?i=${encodeURIComponent(id)}`);
+    const data = await resultados.json();
+
+    return data.meals?.[0] || null;
+};
+
+//  - Obtiene recetas por categoría con todos los detalles.
+export const getMealsByCategory = async (category) => {
+    const resultados = await fetch(`${API_BASE}/filter.php?c=${encodeURIComponent(category)}`);
+    const data = await resultados.json();
+
+    return data.meals || [];
+};
+
+// - Obtiene recetas por tipo de cocina/región con todos los detalles.
+export const getMealsByArea = async (area) => {
+    const resultados = await fetch(`${API_BASE}/filter.php?a=${encodeURIComponent(area)}`);
+    const data = await resultados.json();
+    const meals = data.meals || [];
+
+    const details = await Promise.all(
+        meals.map((meal) => getMealById(meal.idMeal))
+    );
+
+    return details.filter(Boolean);
+};

@@ -59,7 +59,7 @@ function HeroSection({ onNavigate }) {
           </div>
         </form>
 
-        {/* THALIA - Quick filters from Hero to Explore */}
+        {/*  - Quick filters from Hero to Explore */}
 <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
     {[
         { label: 'Italian', type: 'area', value: 'Italian' },
@@ -70,7 +70,7 @@ function HeroSection({ onNavigate }) {
         <button
             key={item.label}
             onClick={() => {
-                // THALIA - Sends the correct quick filter type to Explore.
+                // - Envía el tipo de filtro rápido correcto a Explorar..
                 sessionStorage.setItem(
                     'home-filter',
                     JSON.stringify({

@@ -74,7 +74,7 @@ function Home({ favorites, toggleFavorite, onRecipeClick, onNavigate }) {
             }
         }
     };
-    // THALIA - Mueve el carrusel a la siguiente receta.
+    //  - Mueve el carrusel a la siguiente receta.
     const recipeCarousel = [recipeOfTheDay, ...popularRecipes].filter(Boolean);
     
     const nextRecipeSlide = () => {
@@ -82,13 +82,13 @@ function Home({ favorites, toggleFavorite, onRecipeClick, onNavigate }) {
         prev === recipeCarousel.length - 1 ? 0 : prev + 1
       );
     };
-    // THALIA - va al carrusel a la receta anterior
+    //  - va al carrusel a la receta anterior
     const prevRecipeSlide = () => {
     setCurrentRecipeSlide((prev) =>
         prev === 0 ? recipeCarousel.length - 1 : prev - 1
       );
     };
-// THALIA - Cambia automáticamente la imagen del carrusel cada 4 segundos.
+// - Cambia automáticamente la imagen del carrusel cada 4 segundos.
 
     useEffect(() => {
     if (recipeCarousel.length === 0) return;
@@ -126,7 +126,7 @@ function Home({ favorites, toggleFavorite, onRecipeClick, onNavigate }) {
                 onSelect={handleCategorySelect}
             />
 
-           {/* THALIA - Main visual carousel for Recipe of the Day */}
+           {/*  - Main visual carousel for Recipe of the Day */}
   <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div className="flex items-center justify-between mb-6">
         <div>
@@ -209,7 +209,7 @@ function Home({ favorites, toggleFavorite, onRecipeClick, onNavigate }) {
           </div>
         )}
    </section> 
-{/* final de carrucel de thalia */}
+{/* final de carrucel de  */}
 
             {/* ─── Popular Right Now ─── */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
