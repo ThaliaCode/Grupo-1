@@ -5,6 +5,8 @@ function Navbar({ currentView, onNavigate, favoritesCount }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [isDark, setIsDark] = useState(false);
 
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
+
     const toggleDarkMode = () => {
         setIsDark(!isDark);
         document.documentElement.classList.toggle('dark');
@@ -13,6 +15,7 @@ function Navbar({ currentView, onNavigate, favoritesCount }) {
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
+            sessionStorage.setItem('home-search', searchQuery.trim());
             onNavigate('explore');
             // El query se puede pasar vía estado global o URL params
             setIsSearchOpen(false);
@@ -80,7 +83,7 @@ function Navbar({ currentView, onNavigate, favoritesCount }) {
                             {isSearchOpen && (
                                 <form
                                     onSubmit={handleSearchSubmit}
-                                    className="absolute right-0 top-full mt-2 w-72 bg-surface dark:bg-surface-dark rounded-xl shadow-xl border border-border dark:border-border-dark p-3 animate-in fade-in slide-in-from-top-2"
+                                    className="fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-72 z-50 bg-surface dark:bg-surface-dark rounded-xl shadow-xl border border-border dark:border-border-dark p-3 animate-in fade-in slide-in-from-top-2"
                                 >
                                     <div className="flex items-center gap-2 bg-gray-100 dark:bg-white/5 rounded-lg px-3 py-2">
                                         <span className="font-icons text-text-muted text-lg">search</span>
@@ -109,12 +112,43 @@ function Navbar({ currentView, onNavigate, favoritesCount }) {
                         </button>
 
                         {/* Menú móvil (hamburger) */}
-                        <button className="md:hidden p-2 rounded-lg text-text-secondary dark:text-gray-400 hover:text-brand-primary hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
-                            <span className="font-icons text-xl">menu</span>
+                        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="md:hidden p-2 rounded-lg text-text-secondary dark:text-gray-400 hover:text-brand-primary hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+                            <span className="font-icons text-xl">
+                                    {isMobileMenuOpen ? 'close' : 'menu'}
+                            </span>
                         </button>
                     </div>
                 </div>
             </div>
+
+                         {/* ─── Menú móvil desplegable ─── */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden border-t border-border dark:border-border-dark bg-surface dark:bg-surface-dark px-4 py-3 flex flex-col gap-1">
+                    {navLinks.slice(1).map((link) => (
+                        <button
+                            key={link.id}
+                            onClick={() => {
+                                onNavigate(link.id);
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                                currentView === link.id
+                                    ? 'text-brand-primary bg-brand-primary/10'
+                                    : 'text-text-secondary dark:text-gray-400 hover:text-brand-neutral dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
+                            }`}
+                        >
+                            {link.label}
+                            {link.id === 'favorites' && favoritesCount > 0 && (
+                                <span className="ml-2 inline-flex items-center justify-center w-5 h-5 bg-brand-primary text-white text-[10px] font-bold rounded-full">
+                                    {favoritesCount}
+                                </span>
+                            )}
+                        </button>
+                    ))}
+                </div>
+            )}
+
 
             {/* Overlay para cerrar búsqueda al hacer click fuera */}
             {isSearchOpen && (
