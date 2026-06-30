@@ -57,13 +57,52 @@ function Explore({ favorites, toggleFavorite, onRecipeClick }) {
         setCurrentPage(1);
     };
 
-    const loadRecipesForFilters = useCallback(async (filters) => {
-        const meals = filters.search
-            ? await searchMealsByName(filters.search)
-            : await getAllMeals();
+    // THALIA - Loads recipes using the correct endpoint according to the selected filter.
+const loadRecipesForFilters = useCallback(async (filters) => {
+    // THALIA - Search by recipe name.
+    if (filters.search) {
+        return await searchMealsByName(filters.search);
+    }
 
-        return filterMeals(meals, filters);
-    }, []);
+    // THALIA - Filter by category, for example Dessert, Beef or Chicken.
+    if (filters.category && filters.category !== 'All') {
+        const res = await fetch(
+            `https://www.themealdb.com/api/json/v1/1/filter.php?c=${filters.category}`
+        );
+        const data = await res.json();
+        const meals = data.meals || [];
+
+        const detailPromises = meals.map((meal) =>
+            fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`)
+                .then((res) => res.json())
+        );
+
+        const details = await Promise.all(detailPromises);
+
+        return details.map((item) => item.meals?.[0]).filter(Boolean);
+    }
+
+    // THALIA - Filter by cuisine/area, for example Italian, Mexican or Japanese.
+    if (filters.area) {
+        const res = await fetch(
+            `https://www.themealdb.com/api/json/v1/1/filter.php?a=${filters.area}`
+        );
+        const data = await res.json();
+        const meals = data.meals || [];
+
+        const detailPromises = meals.map((meal) =>
+            fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`)
+                .then((res) => res.json())
+        );
+
+        const details = await Promise.all(detailPromises);
+
+        return details.map((item) => item.meals?.[0]).filter(Boolean);
+    }
+
+    // THALIA - Default load when there is no active filter.
+    return await getAllMeals();
+}, []);
 
     useEffect(() => {
         if (initialLoadDone.current) {
